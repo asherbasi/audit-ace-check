@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { AuditAnswer, ChecklistItem } from "./scoring";
+import type { AnswerValue, AuditAnswer, ChecklistItem } from "./scoring";
 
 export interface Store {
   id: string;
@@ -104,7 +104,7 @@ export async function createAudit(input: {
 export async function saveAnswer(input: {
   audit_id: string;
   item_id: string;
-  answer: string;
+  answer: AnswerValue;
   note: string | null;
 }) {
   const { error } = await supabase
