@@ -14,16 +14,227 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      audit_answers: {
+        Row: {
+          answer: Database["public"]["Enums"]["answer_value"]
+          audit_id: string
+          created_at: string
+          id: string
+          item_id: string
+          note: string | null
+        }
+        Insert: {
+          answer: Database["public"]["Enums"]["answer_value"]
+          audit_id: string
+          created_at?: string
+          id?: string
+          item_id: string
+          note?: string | null
+        }
+        Update: {
+          answer?: Database["public"]["Enums"]["answer_value"]
+          audit_id?: string
+          created_at?: string
+          id?: string
+          item_id?: string
+          note?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_answers_audit_id_fkey"
+            columns: ["audit_id"]
+            isOneToOne: false
+            referencedRelation: "audits"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_answers_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "checklist_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      audits: {
+        Row: {
+          arm: string | null
+          conducted_by: string | null
+          created_at: string
+          created_by: string | null
+          date: string
+          id: string
+          period: string
+          rgm: string | null
+          status: Database["public"]["Enums"]["audit_status"]
+          store_id: string
+          unit_head: string | null
+          updated_at: string
+        }
+        Insert: {
+          arm?: string | null
+          conducted_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          date?: string
+          id?: string
+          period: string
+          rgm?: string | null
+          status?: Database["public"]["Enums"]["audit_status"]
+          store_id: string
+          unit_head?: string | null
+          updated_at?: string
+        }
+        Update: {
+          arm?: string | null
+          conducted_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          date?: string
+          id?: string
+          period?: string
+          rgm?: string | null
+          status?: Database["public"]["Enums"]["audit_status"]
+          store_id?: string
+          unit_head?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audits_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      checklist_items: {
+        Row: {
+          code: string
+          hint: string | null
+          id: string
+          item_order: number
+          section: string
+          section_order: number
+          text: string
+          weight: number
+        }
+        Insert: {
+          code: string
+          hint?: string | null
+          id?: string
+          item_order?: number
+          section: string
+          section_order?: number
+          text: string
+          weight: number
+        }
+        Update: {
+          code?: string
+          hint?: string | null
+          id?: string
+          item_order?: number
+          section?: string
+          section_order?: number
+          text?: string
+          weight?: number
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          store_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          store_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          store_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stores: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          name: string
+          region: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          name: string
+          region?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          name?: string
+          region?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      can_access_store: { Args: { _store_id: string }; Returns: boolean }
+      current_store_id: { Args: never; Returns: string }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      answer_value: "yes" | "no" | "na"
+      app_role: "admin" | "store"
+      audit_status: "draft" | "completed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +361,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      answer_value: ["yes", "no", "na"],
+      app_role: ["admin", "store"],
+      audit_status: ["draft", "completed"],
+    },
   },
 } as const
