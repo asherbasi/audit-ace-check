@@ -12,8 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedHqRouteImport } from './routes/_authenticated/hq'
 import { Route as AuthenticatedStoresRouteImport } from './routes/_authenticated/stores'
 import { Route as AuthenticatedAuditAuditIdRouteImport } from './routes/_authenticated/audit.$auditId'
+import { Route as AuthenticatedStoreStoreIdRouteImport } from './routes/_authenticated/store.$storeId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -29,6 +31,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedHqRoute = AuthenticatedHqRouteImport.update({
+  id: '/hq',
+  path: '/hq',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedStoresRoute = AuthenticatedStoresRouteImport.update({
   id: '/stores',
   path: '/stores',
@@ -40,39 +47,54 @@ const AuthenticatedAuditAuditIdRoute =
     path: '/audit/$auditId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedStoreStoreIdRoute =
+  AuthenticatedStoreStoreIdRouteImport.update({
+    id: '/store/$storeId',
+    path: '/store/$storeId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/hq': typeof AuthenticatedHqRoute
   '/stores': typeof AuthenticatedStoresRoute
   '/audit/$auditId': typeof AuthenticatedAuditAuditIdRoute
+  '/store/$storeId': typeof AuthenticatedStoreStoreIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/hq': typeof AuthenticatedHqRoute
   '/stores': typeof AuthenticatedStoresRoute
   '/audit/$auditId': typeof AuthenticatedAuditAuditIdRoute
+  '/store/$storeId': typeof AuthenticatedStoreStoreIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/hq': typeof AuthenticatedHqRoute
   '/_authenticated/stores': typeof AuthenticatedStoresRoute
   '/_authenticated/audit/$auditId': typeof AuthenticatedAuditAuditIdRoute
+  '/_authenticated/store/$storeId': typeof AuthenticatedStoreStoreIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/stores' | '/audit/$auditId'
+  fullPaths:
+    '/' | '/auth' | '/hq' | '/stores' | '/audit/$auditId' | '/store/$storeId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/stores' | '/audit/$auditId'
+  to: '/' | '/auth' | '/hq' | '/stores' | '/audit/$auditId' | '/store/$storeId'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/_authenticated/hq'
     | '/_authenticated/stores'
     | '/_authenticated/audit/$auditId'
+    | '/_authenticated/store/$storeId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -104,6 +126,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/hq': {
+      id: '/_authenticated/hq'
+      path: '/hq'
+      fullPath: '/hq'
+      preLoaderRoute: typeof AuthenticatedHqRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/stores': {
       id: '/_authenticated/stores'
       path: '/stores'
@@ -118,17 +147,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAuditAuditIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/store/$storeId': {
+      id: '/_authenticated/store/$storeId'
+      path: '/store/$storeId'
+      fullPath: '/store/$storeId'
+      preLoaderRoute: typeof AuthenticatedStoreStoreIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedHqRoute: typeof AuthenticatedHqRoute
   AuthenticatedStoresRoute: typeof AuthenticatedStoresRoute
   AuthenticatedAuditAuditIdRoute: typeof AuthenticatedAuditAuditIdRoute
+  AuthenticatedStoreStoreIdRoute: typeof AuthenticatedStoreStoreIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedHqRoute: AuthenticatedHqRoute,
   AuthenticatedStoresRoute: AuthenticatedStoresRoute,
   AuthenticatedAuditAuditIdRoute: AuthenticatedAuditAuditIdRoute,
+  AuthenticatedStoreStoreIdRoute: AuthenticatedStoreStoreIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
