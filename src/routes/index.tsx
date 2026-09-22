@@ -43,7 +43,13 @@ function Landing() {
           <span className="text-base font-extrabold uppercase tracking-tight text-primary-foreground">
             ACE Audit
           </span>
-          <Button asChild variant="onPrimary" size="sm" className="ml-auto">
+          <Button
+            asChild
+            variant="secondary"
+            size="sm"
+            className="ml-auto bg-primary-foreground text-primary hover:bg-primary-foreground/90"
+          >
+
             <Link to="/auth">Sign in</Link>
           </Button>
         </div>
