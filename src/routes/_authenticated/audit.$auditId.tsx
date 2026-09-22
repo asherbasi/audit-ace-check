@@ -212,7 +212,14 @@ function AuditPage() {
         <div className="flex items-center justify-between gap-3">
           <div>
             <p className="text-sm font-semibold text-foreground">Overall score</p>
-            <p className={cn("text-2xl font-extrabold tabular-nums", `text-${scoreBand(overall.pct)}`)}>
+            <p
+              className={cn(
+                "text-2xl font-extrabold tabular-nums",
+                { green: "text-ok", amber: "text-warn", red: "text-bad", none: "text-muted-foreground" }[
+                  scoreBand(overall.pct)
+                ],
+              )}
+            >
               {formatPct(overall.pct)}
             </p>
           </div>
