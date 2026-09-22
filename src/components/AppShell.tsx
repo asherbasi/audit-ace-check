@@ -40,15 +40,15 @@ export function AppShell({ children }: { children: ReactNode }) {
               <Building2 className="size-4" />
               <span className="hidden sm:inline">Stores</span>
             </Link>
-            {profile?.isAdmin ? (
-              <Link to="/hq" className={linkClass} activeProps={{ className: "bg-white/20 text-primary-foreground" }}>
-                <LayoutGrid className="size-4" />
-                <span className="hidden sm:inline">Head office</span>
-              </Link>
+            <Link to="/hq" className={linkClass} activeProps={{ className: "bg-white/20 text-primary-foreground" }}>
+              <LayoutGrid className="size-4" />
+              <span className="hidden sm:inline">Head office</span>
+            </Link>
+            {profile ? (
+              <button type="button" onClick={signOut} className={cn(linkClass)} aria-label="Sign out">
+                <LogOut className="size-4" />
+              </button>
             ) : null}
-            <button type="button" onClick={signOut} className={cn(linkClass)} aria-label="Sign out">
-              <LogOut className="size-4" />
-            </button>
           </nav>
         </div>
       </header>
