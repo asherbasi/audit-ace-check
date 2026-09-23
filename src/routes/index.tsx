@@ -3,21 +3,24 @@ import { useEffect } from "react";
 import { ClipboardCheck, LineChart, ShieldCheck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import logoAsset from "@/assets/movenpick-logo.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "ACE Audit — Monthly Pizza Hut store audits" },
+      { title: "ACE Audit — Monthly Mövenpick store audits" },
       {
         name: "description",
         content:
-          "Run the monthly ACE checklist across all 13 stores, score each section instantly and track performance over time.",
+          "Run the monthly ACE checklist across all 15 Mövenpick stores, score each section instantly and track performance over time.",
       },
-      { property: "og:title", content: "ACE Audit — Monthly Pizza Hut store audits" },
+      { property: "og:title", content: "ACE Audit — Monthly Mövenpick store audits" },
       {
         property: "og:description",
         content: "Score the 6-section ACE checklist on your phone and track every store from head office.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Landing,
@@ -34,11 +37,8 @@ function Landing() {
     <div className="min-h-screen bg-surface">
       <header className="sticky top-0 z-40 bg-primary">
         <div className="mx-auto flex max-w-5xl items-center gap-2 px-4 py-3">
-          <span className="grid size-8 place-items-center rounded-md bg-primary-foreground text-primary">
-            <ClipboardCheck className="size-5" />
-          </span>
-          <span className="text-base font-extrabold uppercase tracking-tight text-primary-foreground">
-            ACE Audit
+          <span className="flex h-10 w-36 items-center rounded bg-primary-foreground px-2">
+            <img src={logoAsset.url} alt="Mövenpick Swiss Ice Cream" className="h-auto w-full" />
           </span>
           <Button
             asChild
@@ -57,7 +57,7 @@ function Landing() {
           Monthly store audits, scored the moment you tap.
         </h1>
         <p className="mt-3 max-w-xl text-base text-muted-foreground">
-          One checklist, six sections, thirteen stores. Fill it in on your phone in store, and head office
+          One checklist, six sections, fifteen stores. Fill it in on your phone in store, and head office
           sees the score straight away.
         </p>
         <Button asChild size="lg" className="mt-6">

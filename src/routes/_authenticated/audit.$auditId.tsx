@@ -33,6 +33,8 @@ export const Route = createFileRoute("/_authenticated/audit/$auditId")({
       { name: "description", content: "Complete the 6-section ACE checklist with live weighted scoring." },
       { property: "og:title", content: "Audit — ACE Audit" },
       { property: "og:description", content: "Complete the 6-section ACE checklist with live weighted scoring." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AuditPage,
@@ -63,6 +65,7 @@ function AuditPage() {
   const overall = computeScore(items, current);
   const readOnly = audit?.status === "completed";
   const progress = items.length ? (overall.answered / items.length) * 100 : 0;
+  const overallBand = scoreBand(overall.pct);
 
   async function setAnswer(itemId: string, answer: AnswerValue) {
     if (readOnly) return;
@@ -133,7 +136,12 @@ function AuditPage() {
         </div>
         <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted">
           <div
-            className="h-full rounded-full bg-primary transition-all"
+            className={cn("h-full rounded-full transition-all", {
+              green: "bg-ok",
+              amber: "bg-warn",
+              red: "bg-bad",
+              none: "bg-muted-foreground",
+            }[overallBand])}
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -170,24 +178,24 @@ function AuditPage() {
 
                     <div className="mt-3 grid grid-cols-3 gap-2">
                       {(["yes", "no", "na"] as const).map((value) => (
-                        <button
+                        <Button
                           key={value}
                           type="button"
                           disabled={readOnly}
                           onClick={() => setAnswer(item.id, value)}
                           className={cn(
-                            "rounded-lg border px-2 py-2 text-sm font-semibold transition-colors disabled:opacity-60",
+                            "h-10 rounded-md border px-2 text-sm font-semibold shadow-none",
                             answer === value
                               ? value === "yes"
-                                ? "border-ok bg-ok text-white"
+                                ? "border-ok bg-ok text-primary-foreground hover:bg-ok/90"
                                 : value === "no"
-                                  ? "border-bad bg-bad text-white"
-                                  : "border-foreground/30 bg-muted text-foreground"
+                                  ? "border-bad bg-bad text-primary-foreground hover:bg-bad/90"
+                                  : "border-muted-foreground/30 bg-muted text-foreground hover:bg-muted"
                               : "border-border bg-background text-muted-foreground hover:border-foreground/30",
                           )}
                         >
                           {value === "na" ? "N/A" : value === "yes" ? "Yes" : "No"}
-                        </button>
+                        </Button>
                       ))}
                     </div>
 

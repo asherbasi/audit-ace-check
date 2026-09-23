@@ -9,9 +9,11 @@ export const Route = createFileRoute("/_authenticated/hq")({
   head: () => ({
     meta: [
       { title: "Head office — ACE Audit" },
-      { name: "description", content: "Compare the latest ACE audit scores across every Pizza Hut store." },
+      { name: "description", content: "Compare the latest ACE audit scores across every Mövenpick store." },
       { property: "og:title", content: "Head office — ACE Audit" },
-      { property: "og:description", content: "Compare the latest ACE audit scores across every Pizza Hut store." },
+      { property: "og:description", content: "Compare the latest ACE audit scores across every Mövenpick store." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: HqPage,
