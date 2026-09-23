@@ -33,6 +33,8 @@ export const Route = createFileRoute("/_authenticated/stores")({
       { name: "description", content: "Pick a store to start or review its monthly ACE audit." },
       { property: "og:title", content: "Stores — ACE Audit" },
       { property: "og:description", content: "Pick a store to start or review its monthly ACE audit." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: StoresPage,

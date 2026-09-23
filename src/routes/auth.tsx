@@ -1,12 +1,12 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ClipboardCheck } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import logoAsset from "@/assets/movenpick-logo.png.asset.json";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -15,6 +15,8 @@ export const Route = createFileRoute("/auth")({
       { name: "description", content: "Sign in to record and review monthly ACE store audits." },
       { property: "og:title", content: "Sign in — ACE Audit" },
       { property: "og:description", content: "Sign in to record and review monthly ACE store audits." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AuthPage,
@@ -68,11 +70,9 @@ function AuthPage() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-surface px-4 py-10">
-      <Link to="/" className="mb-6 flex items-center gap-2">
-        <span className="grid size-10 place-items-center rounded-lg bg-primary text-primary-foreground">
-          <ClipboardCheck className="size-6" />
-        </span>
-        <span className="text-2xl font-extrabold uppercase tracking-tight text-primary">ACE Audit</span>
+      <Link to="/" className="mb-8 flex flex-col items-center gap-3">
+        <img src={logoAsset.url} alt="Mövenpick Swiss Ice Cream" className="h-auto w-64 max-w-[78vw]" />
+        <span className="text-xs font-semibold uppercase text-muted-foreground">ACE Audit</span>
       </Link>
 
       <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-card">
@@ -120,13 +120,14 @@ function AuthPage() {
           </Button>
         </form>
 
-        <button
+        <Button
           type="button"
+          variant="link"
           onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-          className="mt-4 w-full text-center text-sm font-medium text-primary underline-offset-4 hover:underline"
+          className="mt-4 w-full"
         >
           {mode === "signin" ? "Need an account? Sign up" : "Already have an account? Sign in"}
-        </button>
+        </Button>
       </div>
     </div>
   );
