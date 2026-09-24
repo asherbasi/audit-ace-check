@@ -1,7 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { ArrowLeft, CheckCircle2, Lock } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Download, Lock } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { exportAuditXlsx } from "@/lib/export-audit";
 import { toast } from "sonner";
 
 import {
@@ -96,6 +98,18 @@ function AuditPage() {
     }
   }
 
+  async function saveField(field: "rgm" | "arm" | "unit_head" | "conducted_by", value: string) {
+    if (!audit || readOnly) return;
+    const v = value.trim() || null;
+    if (v === (audit[field] ?? null)) return;
+    try {
+      await updateAudit(auditId, { [field]: v });
+      await queryClient.invalidateQueries({ queryKey: ["audit", auditId] });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not save");
+    }
+  }
+
   async function toggleStatus() {
     if (!audit) return;
     const status = audit.status === "completed" ? "draft" : "completed";
@@ -149,6 +163,30 @@ function AuditPage() {
           {overall.answered} of {items.length} items answered · {overall.actual}/{overall.possible} points
         </p>
       </div>
+
+      <section className="rounded-2xl border border-border bg-card p-4 shadow-card">
+        <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-foreground">Audit details</h2>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {(
+            [
+              ["rgm", "RGM (Regional General Manager)"],
+              ["arm", "ARM (Area Restaurant Manager)"],
+              ["unit_head", "Unit Head"],
+              ["conducted_by", "ACE conducted by"],
+            ] as const
+          ).map(([field, lbl]) => (
+            <label key={field} className="space-y-1">
+              <span className="text-xs font-semibold text-muted-foreground">{lbl}</span>
+              <Input
+                key={`${field}-${audit[field] ?? ""}`}
+                defaultValue={audit[field] ?? ""}
+                disabled={readOnly}
+                onBlur={(e) => saveField(field, e.target.value)}
+              />
+            </label>
+          ))}
+        </div>
+      </section>
 
       {sections.map(({ section, items: sectionItems }) => {
         const sectionScore = computeScore(sectionItems, current);
@@ -231,7 +269,13 @@ function AuditPage() {
               {formatPct(overall.pct)}
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap justify-end gap-2">
+            <Button
+              variant="outline"
+              onClick={() => exportAuditXlsx(audit, store?.name ?? "Store", items, current)}
+            >
+              <Download className="size-4" /> Download Excel report
+            </Button>
             <Button variant="outline" onClick={() => navigate({ to: "/store/$storeId", params: { storeId: audit.store_id } })}>
               Done
             </Button>
