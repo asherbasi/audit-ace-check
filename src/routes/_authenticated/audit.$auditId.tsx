@@ -78,7 +78,7 @@ function AuditPage() {
     setAnswers(next);
     setSaving(true);
     try {
-      await saveAnswer({ audit_id: auditId, item_id: itemId, answer, note: next[itemId]!.note });
+      await saveAnswer({ audit_id: auditId, item_id: itemId, answer, note: next[itemId]?.note ?? null });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not save");
     } finally {
@@ -272,7 +272,13 @@ function AuditPage() {
           <div className="flex flex-wrap justify-end gap-2">
             <Button
               variant="outline"
-              onClick={() => exportAuditXlsx(audit, store?.name ?? "Store", items, current)}
+              onClick={async () => {
+                try {
+                  await exportAuditXlsx(audit, store?.name ?? "Store", items, current);
+                } catch (error) {
+                  toast.error(error instanceof Error ? error.message : "Could not create the Excel report");
+                }
+              }}
             >
               <Download className="size-4" /> Download Excel report
             </Button>

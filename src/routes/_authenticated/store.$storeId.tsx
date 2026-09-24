@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { ArrowLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ChevronRight, Download } from "lucide-react";
+import { toast } from "sonner";
 
 import {
   fetchAllAnswers,
@@ -12,6 +13,8 @@ import {
 import { computeScore, formatPct, formatPeriod, scoreBand } from "@/lib/scoring";
 import { ScorePill } from "@/components/ScorePill";
 import { cn } from "@/lib/utils";
+import { exportAuditXlsx } from "@/lib/export-audit";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated/store/$storeId")({
   head: () => ({
@@ -60,6 +63,7 @@ function StorePage() {
   });
 
   const latest = rows[0];
+  const latestCompleted = rows.find(({ audit }) => audit.status === "completed");
   const openIssues = (latest?.answers ?? []).filter((a) => a.answer === "no");
   const trend = [...rows].reverse().slice(-6);
 
@@ -83,7 +87,26 @@ function StorePage() {
               {store?.region ? ` · ${store.region}` : ""}
             </p>
           </div>
-          <ScorePill pct={latest?.score.pct ?? null} size="lg" />
+          <div className="flex shrink-0 items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!latestCompleted || !store}
+              title={latestCompleted ? "Download latest completed audit" : "No completed audit available"}
+              onClick={async () => {
+                if (!latestCompleted || !store) return;
+                const answerMap = Object.fromEntries(latestCompleted.answers.map((answer) => [answer.item_id, answer]));
+                try {
+                  await exportAuditXlsx(latestCompleted.audit, store.name, items, answerMap);
+                } catch (error) {
+                  toast.error(error instanceof Error ? error.message : "Could not create the Excel report");
+                }
+              }}
+            >
+              <Download className="size-4" /> <span className="hidden sm:inline">Excel report</span>
+            </Button>
+            <ScorePill pct={latest?.score.pct ?? null} size="lg" />
+          </div>
         </div>
 
         {trend.length > 0 ? (
